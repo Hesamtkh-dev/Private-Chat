@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vanish — Ephemeral LAN Room</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body
+  data-role="{{ role }}"
+  data-token="{{ token }}"
+  data-seconds-left="{{ seconds_left }}"
+  data-max-file-mb="{{ max_file_mb }}"
+  data-max-total-mb="{{ max_total_mb }}"
+>
+  <div id="join-overlay" class="overlay">
+    <form id="join-form" class="card">
+      <h1>vanish</h1>
+      <p class="muted">Temporary LAN room. Everything wipes on exit or timer expiration.</p>
+      <label for="name-input">Display name</label>
+      <input id="name-input" type="text" maxlength="32" placeholder="Enter your name" required />
+      <button type="submit" class="btn primary">Enter Room</button>
+    </form>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        <strong>vanish</strong>
+        <span class="badge">{{ role|upper }}</span>
+      </div>
+      <div class="meta">
+        <span id="timer" class="timer">--:--</span>
+        <span id="storage-info" class="muted">0 / {{ max_total_mb }} MB</span>
+        <button id="copy-join-btn" class="btn ghost" type="button">Copy Join Link</button>
+        {% if role == "host" %}
+        <button id="end-now-btn" class="btn danger" type="button">End Now</button>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <aside class="sidebar">
+        <h3>Connected (<span id="user-count">0</span>)</h3>
+        <ul id="user-list" class="user-list"></ul>
+        <div class="qr-box">
+          <p class="muted small">Scan to join on WiFi</p>
+          <img id="qr-img" src="/api/qr?token={{ token }}" alt="Join QR Code" />
+        </div>
+      </aside>
+
+      <section class="chat-pane" id="drop-zone">
+        <div id="messages" class="messages"></div>
+        <div id="typing-indicator" class="typing muted small"></div>
+
+        <form id="chat-form" class="composer">
+          <label class="btn ghost file-btn" title="Upload file (max {{ max_file_mb }} MB)">
+            Attach
+            <input id="file-input" type="file" hidden />
+          </label>
+          <input
+            id="msg-input"
+            type="text"
+            maxlength="2000"
+            placeholder="Send a message or drop a file anywhere..."
+            autocomplete="off"
+          />
+          <button type="submit" class="btn primary">Send</button>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
